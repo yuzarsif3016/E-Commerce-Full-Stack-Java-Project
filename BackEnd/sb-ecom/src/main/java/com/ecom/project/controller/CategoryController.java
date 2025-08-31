@@ -3,7 +3,10 @@ package com.ecom.project.controller;
 import com.ecom.project.model.Category;
 import com.ecom.project.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -26,9 +29,15 @@ public class CategoryController {
         return "Category added Successfully";
     }
 
-    @DeleteMapping("api/admin/categories/{id}")
-    public String deleteCategory( @PathVariable Long id)
+    @DeleteMapping("api/admin/categories/{categoryId}")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId)
     {
-        return categoryService.deleteCategory(id);
+       try
+       {
+           String status =  categoryService.deleteCategory(categoryId);
+           return new ResponseEntity<>(status, HttpStatus.OK);
+       }catch (ResponseStatusException ex){
+           return new ResponseEntity<>(ex.getReason(), ex.getStatusCode());
+       }
     }
 }
